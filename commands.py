@@ -16,6 +16,7 @@ app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_tok
 
 
 @app.on_message(filters.command("start") & filters.private)
+async def start(client, message):
     if len(message.command)>1:
         return await message.reply("hi welcome to token verify bot")
     data = message.command[1]
