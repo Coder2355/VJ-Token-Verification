@@ -14,7 +14,7 @@ app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_tok
 
 
 
-@app.on_message(filters.Command("start"))
+@app.on_message(filters.command("start"))
 async def start(client, message):
 
     data = message.command[1]
