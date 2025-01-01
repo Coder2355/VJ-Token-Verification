@@ -16,34 +16,52 @@ app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_tok
 
 @app.on_message(filters.command("start"))
 async def start(client, message):
+    # Check if the command has parameters
     if len(message.command) < 2:
         return await message.reply_text(
-            text="<b>Invalid or incomplete command. Please use a valid link or command!</b>",
+            text="<b>Welcome to the Verification Bot!</b>\n\n"
+                 "It seems you started the bot without a valid link or command.\n"
+                 "To use this bot, please follow the instructions or use a valid verification link.",
             protect_content=True
         )
 
-    data = message.command[1]
-    if data.split("-", 1)[0] == "verify":  # set if or elif depending on your code
-        userid = data.split("-", 2)[1]
-        token = data.split("-", 3)[2]
-        if str(message.from_user.id) != str(userid):
+    data = message.command[1]  # Extract the parameter from the command
+    if data.split("-", 1)[0] == "verify":  # Check if it's a verification command
+        try:
+            userid = data.split("-", 2)[1]
+            token = data.split("-", 3)[2]
+        except IndexError:
             return await message.reply_text(
-                text="<b>Invalid link or Expired link !</b>",
+                text="<b>Invalid verification link! Please check and try again.</b>",
                 protect_content=True
             )
+
+        # Verify if the user ID matches
+        if str(message.from_user.id) != str(userid):
+            return await message.reply_text(
+                text="<b>Invalid link or Expired link!</b>",
+                protect_content=True
+            )
+
+        # Validate the token
         is_valid = await check_token(client, userid, token)
         if is_valid:
             await message.reply_text(
-                text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all files till today midnight.</b>",
+                text=f"<b>Hey {message.from_user.mention}, You are successfully verified!</b>\n\n"
+                     "You now have unlimited access to all files until midnight.",
                 protect_content=True
             )
             await verify_user(client, userid, token)
         else:
             return await message.reply_text(
-                text="<b>Invalid link or Expired link !</b>",
+                text="<b>Invalid or expired link! Please try again.</b>",
                 protect_content=True
             )
-
+    else:
+        return await message.reply_text(
+            text="<b>Unknown command! Please use a valid link or command.</b>",
+            protect_content=True
+        )
 
 @app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video | filters.document | filters.text | filters.audio))
 async def button_handler(client, message):
