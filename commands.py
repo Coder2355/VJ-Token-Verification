@@ -40,7 +40,7 @@ async def start(client, message):
             )
 
 
-@app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video | filters.document | filters.text | filters.audio)
+@app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video | filters.document | filters.text | filters.audio))
 async def button_handler(client, message):
 
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
