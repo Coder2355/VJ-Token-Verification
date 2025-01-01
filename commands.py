@@ -1,7 +1,21 @@
 from utils import verify_user, check_token
+from utils import check_verification, get_token
+from info import VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
+from pyrogram import Client, filters 
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ChatPermissions
 
-#@Client.on_message..........
-#async def start(...........
+API_ID = "28015531"
+API_HASH = "2ab4ba37fd5d9ebf1353328fc915ad28"
+BOT_TOKEN = "7800807621:AAHctirzl9smHyCPXZbtSBkTlyT6vVgKbVE"
+BOT_USERNAME = "Hshdgdvdv23bot"
+GROUP_ID = -1002176916778
+
+app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+
+
+
+@app.on_message(filters.Command("start"))
+async def start(client, message):
 
     data = message.command[1]
     if data.split("-", 1)[0] == "verify": # set if or elif it depend on your code
@@ -25,15 +39,9 @@ from utils import verify_user, check_token
                 protect_content=True
             )
 
-# new code from here :- 
-# where you want to add your verification 
-# this is the code where user get shortlink and verification message 
 
-from utils import check_verification, get_token
-from info import VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
-
-#@Client.on_message..........
-#async def...........
+@app.on_message(filters.group & filters.chat(GROUP_ID) & (filters.video | filters.document | filters.text | filters.audio)
+async def button_handler(client, message):
 
     if not await check_verification(client, message.from_user.id) and VERIFY == True:
         btn = [[
@@ -47,3 +55,8 @@ from info import VERIFY, VERIFY_TUTORIAL, BOT_USERNAME
             reply_markup=InlineKeyboardMarkup(btn)
         )
         return
+
+
+if __name__ == "__main__":
+    print("Bot is running...")
+    app.run()
