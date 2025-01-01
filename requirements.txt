@@ -1,2 +1,5 @@
 shortzy
 pytz
+pyrogram
+tgcrypto
+asyncio
