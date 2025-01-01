@@ -16,9 +16,14 @@ app = Client("group_verification_bot", api_id=API_ID, api_hash=API_HASH, bot_tok
 
 @app.on_message(filters.command("start"))
 async def start(client, message):
+    if len(message.command) < 2:
+        return await message.reply_text(
+            text="<b>Invalid or incomplete command. Please use a valid link or command!</b>",
+            protect_content=True
+        )
 
     data = message.command[1]
-    if data.split("-", 1)[0] == "verify": # set if or elif it depend on your code
+    if data.split("-", 1)[0] == "verify":  # set if or elif depending on your code
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
         if str(message.from_user.id) != str(userid):
@@ -27,7 +32,7 @@ async def start(client, message):
                 protect_content=True
             )
         is_valid = await check_token(client, userid, token)
-        if is_valid == True:
+        if is_valid:
             await message.reply_text(
                 text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all files till today midnight.</b>",
                 protect_content=True
